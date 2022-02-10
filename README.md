@@ -1,2 +1,2 @@
 # proj
-Sample C project structure.
+Sample C project structure (WIP).
