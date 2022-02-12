@@ -2,21 +2,26 @@ DIR_BIN := bin
 DIR_SRC := src
 DIR_LIB := lib
 DIR_OBJ := obj
-CFLAGS := -std=c11 -Wall -Wextra -Wpedantic
-DFLAGS := -std=c11 -Wall -Wextra -Wpedantic -g -DDEBUG
-SRC := app
-APP := app
-LIBS := 
+EXT_APP :=
+EXT_OBJ := o
+EXT_LIB := so
+EXT_INC := h
+EXT_SRC := c
+EXT_DBG := debug
 
-.PHONY all: $(DIR_BIN)/$(APP)
+CC := gcc
+CFLAGS := -I -std=c99 -Wall -Wextra -pedantic
+DFLAGS := -g -DDEBUG
+LIBS := $(patsubst ./%,%,$(shell find -regex ".*\/$(DIR_LIB)\/\w+"))
 
-$(DIR_BIN)/$(APP): $(DIR_SRC)/$(SRC) $(LIBS)
-	$(CC) $(CFLAGS) $< $(LIBS) -o $@
+.PHONY: all debug $(LIBS)
 
-.PHONY: dependencies
-dependencies:
-	
-.PHONY: clean
-clean:
-	rm $(wildcard $(DIR_BIN)/*) 
+all: $(LIBS)
+	@echo $(LIBS)
 
+$(LIBS): 
+	$(CC) $(CFLAGS)\
+	$(patsubst ./%,%,$(shell find -regex ".*$@\/$(DIR_SRC)\/\w+\.c"))\
+	-o $@/$(DIR_BIN)/$(patsubst $(DIR_LIB)/%,%,$@).so
+
+%.c: %.h
