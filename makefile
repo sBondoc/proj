@@ -10,7 +10,8 @@ EXT_SRC := c
 EXT_DBG := debug
 
 CC := gcc
-CFLAGS := -I -std=c99 -Wall -Wextra -pedantic
+CFLAGS := -I -ansi -std=c99 -Wall -Wextra -pedantic
+LFLAGS := -shared -fPIC
 DFLAGS := -g -DDEBUG
 LIBS := $(patsubst ./%,%,$(shell find -regex ".*\/$(DIR_LIB)\/\w+"))
 
@@ -20,8 +21,8 @@ all: $(LIBS)
 	@echo $(LIBS)
 
 $(LIBS): 
-	$(CC) $(CFLAGS)\
-	$(patsubst ./%,%,$(shell find -regex ".*$@\/$(DIR_SRC)\/\w+\.c"))\
-	-o $@/$(DIR_BIN)/$(patsubst $(DIR_LIB)/%,%,$@).so
+	$(CC) $(CFLAGS) $(LFLAGS) \
+	-o $@/$(DIR_BIN)/$(patsubst $(DIR_LIB)/%,%,$@).so \
+	$(patsubst ./%,%,$(shell find -regex ".*$@\/$(DIR_SRC)\/\w+\.c"))
 
 %.c: %.h
